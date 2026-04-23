@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Realis Obscura | Itens Amaldiçoados</title>
+    <link rel="stylesheet" th:href="@{/css/estilo.css}">
+</head>
+
+<body>
+
+    <div class="top-bar">
+        <ul>
+            <li><a th:href="@{/form}">Form</a></li>
+            <li><a th:href="@{/listar}">listar usuarios</a></li>
+        </ul>
+    </div>
+
+    <header>
+        <h1><a th:href="@{/}"><img th:src="@{/img/R.svg}" alt="Logo Arquivo Oculto"></a></h1>
+        <nav>
+            <ul>
+                <li><a th:href="@{/}">Feed Principal</a></li>
+                <li>Itens Amaldiçoados</li>
+                <li><a th:href="@{/teorias}">Teorias da Conspiração</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <h2>O Cofre de Artefatos</h2>
+        <p>Objetos catalogados que apresentam atividade residual ou maldições ativas. Não tente reproduzir rituais em
+            casa.</p>
+
+        <ul>
+            <li>
+                <h3>O Quadro do Menino Chorão</h3>
+                <p>Dizem que as casas onde essas réplicas foram penduradas nos anos 80 pegaram fogo misteriosamente, mas
+                    o quadro sempre saía intacto das cinzas.</p>
+            </li>
+            <li>
+                <h3>A Cadeira de Thomas Busby</h3>
+                <p>Uma cadeira de carvalho de 1702. Todo mundo que sentou nela nos últimos 300 anos encontrou um fim
+                    trágico pouco tempo depois. Hoje ela fica pendurada na parede do museu para ninguém usar por
+                    acidente.</p>
+            </li>
+            <li>
+                <h3>A Caixa Dybbuk</h3>
+                <p>Um armário de vinhos antigo comprado no eBay. O dono original relatou queda de cabelo, pesadelos com
+                    uma bruxa velha e cheiro de urina de gato pela casa. O objeto foi selado com cera de abelha.</p>
+            </li>
+        </ul>
+    </main>
+</body>
+
+</html>

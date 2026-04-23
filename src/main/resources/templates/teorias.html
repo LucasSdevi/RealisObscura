@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Realis Obscura | Teorias</title>
+  <link rel="stylesheet" th:href="@{/css/estilo.css}">
+</head>
+
+<body>
+
+  <div class="top-bar">
+    <ul>
+      <li><a th:href="@{/form}">Form</a></li>
+      <li><a th:href="@{/listar}">Listar usuarios</a></li>
+    </ul>
+  </div>
+
+  <header>
+    <h1><a th:href="@{/}"><img th:src="@{/img/R.svg}" alt="Logo Arquivo Oculto"></a></h1>
+    <nav>
+      <ul>
+        <li><a th:href="@{/}">Feed Principal</a></li>
+        <li><a th:href="@{/itens}">Itens Amaldiçoados</a></li>
+        <li>Teorias da Conspiração</li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <h2>Arquivos Confidenciais</h2>
+    <p>De falhas na Matrix a verdades inconvenientes. Julgue com sua própria mente.</p>
+
+    <ul>
+      <li>
+        <h3>Pombos são Drones do Governo</h3>
+        <p>Você já viu um filhote de pombo? Não. Porque eles já saem da fábrica montados e programados para vigiar as
+          praças públicas. O ato de "bicar o chão" é apenas a recarga de bateria por indução magnética no asfalto.</p>
+      </li>
+      <li>
+        <h3>O Projeto "Mark e o Calypso"</h3>
+        <p>Documentos da Deep Web vazados em 2023 indicam que Mark Zuckerberg não quer seus dados, ele quer suas
+          músicas. O verdadeiro motivo de ele usar tanto protetor solar no rosto é porque ele é alérgico ao oxigênio da
+          Terra, já que sua biologia alienígena sobrevive exclusivamente da ingestão de pendrives de 8GB contendo a
+          discografia pirata da Banda Calypso. Isso explica a grande queda do WhatsApp em 2021: ele tropeçou no fio do
+          servidor principal enquanto tentava reproduzir a coreografia de "A Lua Me Traiu".</p>
+      </li>
+      <li>
+        <h3>A Terra é um Formigueiro Alienígena</h3>
+        <p>Não somos o topo da cadeia alimentar, somos apenas um terrário escolar para seres interdimensionais. Os
+          vulcões são apenas eles cutucando a gente com uma lupa pra ver como reagimos.</p>
+      </li>
+    </ul>
+  </main>
+</body>
+
+</html>

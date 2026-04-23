@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Realis Obscura | O Feed da Verdade</title>
+    <link rel="stylesheet" th:href="@{/css/estilo.css}">
+</head>
+
+<body>
+
+    <div class="top-bar">
+        <ul>
+            <li><a th:href="@{/form}">Form</a></li>
+            <li><a th:href="@{/listar}">listar usuarios</a></li>
+        </ul>
+    </div>
+
+    <header>
+        <h1><img th:src="@{/img/R.svg}" alt="Logo Arquivo Oculto"></h1>
+        <nav>
+            <ul>
+                <li>Feed Principal</li>
+                <li><a th:href="@{/itens}">Itens Amaldiçoados</a></li>
+                <li><a th:href="@{/teorias}">Teorias da Conspiração</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <h2>Destaques do Submundo</h2>
+        <p>As evidências que o governo e a mídia tentam apagar da internet. Atualizado pelos nossos informantes
+            anônimos.</p>
+
+        <ul>
+            <li>
+                <h3>[ARTEFATO] O Espelho de John Dee</h3>
+                <p>Usado no século XVI para invocar anjos e demônios. Atualmente no Museu Britânico. Quem olha muito
+                    tempo para ele relata ouvir sussurros em idiomas mortos.</p>
+            </li>
+            <li>
+                <h3>[TEORIA] O Incidente de Varginha 1996</h3>
+                <p>Múltiplas testemunhas, movimentação militar atípica e o silêncio absoluto. O que realmente caiu no
+                    interior de Minas Gerais?</p>
+            </li>
+        </ul>
+    </main>
+
+</body>
+
+</html>

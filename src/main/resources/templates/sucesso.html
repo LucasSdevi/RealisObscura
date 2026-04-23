@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Operação Concluída - Sistema</title>
+    <link rel="stylesheet" th:href="@{/css/estilo.css}">
+</head>
+<body>
+
+    <nav class="top-bar">
+        <ul>
+            <li><a th:href="@{/}">Página Inicial</a></li>
+        </ul>
+    </nav>
+
+    <header>
+        <h1><img th:src="@{/img/R.svg}" alt="Logo"></h1>
+        <nav>
+            <ul>
+                <li>Status: Autenticado</li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div class="success-container">
+            <h2>Acesso Concedido</h2>
+            <p>As credenciais foram validadas com sucesso no banco de dados.</p>
+        </div>
+    </main>
+
+</body>
+</html>

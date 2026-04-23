@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Sistema de Acesso - Restrito</title>
+    <link rel="stylesheet" th:href="@{/css/estilo.css}">
+</head>
+
+<body>
+
+    <div class="top-bar">
+        <ul>
+            <li><a th:href="@{/form}">Form</a></li>
+            <li><a th:href="@{/listar}">listar usuarios</a></li>
+        </ul>
+    </div>
+
+    <nav class="top-bar">
+        <ul>
+            <li><a th:href="@{/}">Página Inicial</a></li>
+        </ul>
+    </nav>
+
+    <header>
+        <h1><img th:src="@{/img/R.svg}" alt="Logo do Sistema"></h1>
+        <nav>
+            <ul>
+                <li>Terminal de Identificação</li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <h2>Acesso ao Banco de Dados</h2>
+        <p>Preencha os dados do registro para descriptografar os arquivos.</p>
+
+        <form th:action="@{/form}" th:object="${usuario}" method="POST" class="login-form">
+
+            <div class="campo-container">
+                <label for="nome">Identificação (Nome):</label>
+                <input type="text" th:field="*{nome}" placeholder="Nome do Agente..." required>
+            </div>
+
+            <div class="campo-container">
+                <label for="email">Canal de Contato (E-mail):</label>
+                <input type="email" th:field="*{email}" placeholder="agente@sistema.local" required>
+            </div>
+
+            <div class="campo-container">
+                <label for="nascimento">Data de Registro (Nascimento):</label>
+                <input type="date" th:field="*{dataNascimento}" required>
+            </div>
+
+            <button type="submit" class="btn-acesso">Autenticar Acesso</button>
+        </form>
+    </main>
+
+</body>
+
+</html>
