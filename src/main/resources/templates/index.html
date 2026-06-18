@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Realis Obscura | O Feed da Verdade</title>
+    <link rel="stylesheet" th:href="@{/css/estilo.css}">
+</head>
+<body>
+
+    <!-- ═══ NAVBAR ═══ -->
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <img th:src="@{/img/R.svg}" alt="Realis Obscura">
+            <span>Realis Obscura</span>
+        </div>
+
+        <ul class="navbar-nav">
+            <li><a th:href="@{/}" class="active">Feed</a></li>
+            <li><a th:href="@{/itens}">Itens</a></li>
+            <li><a th:href="@{/teorias}">Teorias</a></li>
+            <li sec:authorize="isAuthenticated()">
+                <a th:href="@{/posts/novo}">Postar</a>
+            </li>
+            <li sec:authorize="hasAuthority('admin')">
+                <a th:href="@{/listar}">Arquivos</a>
+            </li>
+            <li sec:authorize="hasAuthority('admin')">
+                <a th:href="@{/admin}">Painel</a>
+            </li>
+        </ul>
+
+        <div class="navbar-user">
+            <span sec:authorize="isAuthenticated()">
+                <span class="user-greeting">Agente</span>
+                <span class="user-name" sec:authentication="name"></span>
+                <form th:action="@{/logout}" method="post" style="display:inline;">
+                    <button type="submit" class="btn-logout">Sair</button>
+                </form>
+            </span>
+            <span sec:authorize="!isAuthenticated()">
+                <a th:href="@{/login}" class="btn-login">Acessar</a>
+            </span>
+        </div>
+    </nav>
+
+    <!-- ═══ HEADER ═══ -->
+    <div class="container">
+        <header class="site-header">
+            <img th:src="@{/img/R.svg}" alt="Logo Realis Obscura">
+            <h1>O Feed da Verdade</h1>
+            <p class="tagline">As evidências que o governo e a mídia tentam apagar da internet.</p>
+        </header>
+
+        <!-- Mensagens flash -->
+        <div th:if="${successMsg}" class="alert alert-success animate-in" th:text="${successMsg}"></div>
+
+        <!-- ═══ CONTEÚDO ═══ -->
+        <main>
+            <div class="home-intro">
+                <h2>Destaques do Submundo</h2>
+                <p>Atualizado pelos nossos informantes anônimos. A verdade está lá fora — e aqui dentro.</p>
+            </div>
+
+            <div th:if="${posts == null or posts.empty}">
+                <div class="card animate-in">
+                    <h3>Base de Dados Vazia</h3>
+                    <p>Nenhum arquivo foi submetido ainda. Nossos informantes estão em campo. Faça login e contribua com novas evidências.</p>
+                </div>
+            </div>
+
+            <div th:each="post : ${posts}" class="card animate-in">
+                <h3>
+                    <span th:text="'[' + ${post.categoria} + ']'"></span>
+                    <a th:href="@{/posts/{id}(id=${post.id})}" th:text="${post.titulo}"></a>
+                </h3>
+                <p th:text="${#strings.abbreviate(post.conteudo, 300)}"></p>
+                <div style="margin-top: 10px; font-size: 0.75rem; color: var(--text-muted);">
+                    <span th:text="'Por: ' + ${post.autor.nome}"></span> |
+                    <span th:text="${#temporals.format(post.dataCriacao, 'dd/MM/yyyy HH:mm')}"></span> |
+                    <a th:href="@{/posts/{id}(id=${post.id})}" style="font-size: 0.75rem;">Ler mais →</a>
+                    <span th:if="${post.comentarios != null and !post.comentarios.empty}"
+                          style="margin-left: 10px;"
+                          th:text="'💬 ' + ${post.comentarios.size()}"></span>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- ═══ FOOTER ═══ -->
+    <footer class="site-footer">
+        <p><span>Realis Obscura</span> &copy; 2026 — A verdade não se esconde. Ela é escondida.</p>
+    </footer>
+
+</body>
+</html>

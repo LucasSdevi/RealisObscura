@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Realis Obscura | Arquivos Confidenciais</title>
+    <link rel="stylesheet" th:href="@{/css/estilo.css}">
+</head>
+<body>
+
+    <!-- ═══ NAVBAR ═══ -->
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <img th:src="@{/img/R.svg}" alt="Realis Obscura">
+            <span>Realis Obscura</span>
+        </div>
+
+        <ul class="navbar-nav">
+            <li><a th:href="@{/}">Feed</a></li>
+            <li><a th:href="@{/itens}">Itens</a></li>
+            <li><a th:href="@{/teorias}">Teorias</a></li>
+            <li sec:authorize="isAuthenticated()">
+                <a th:href="@{/listar}" class="active">Arquivos</a>
+            </li>
+            <li sec:authorize="hasAuthority('admin')">
+                <a th:href="@{/admin}">Painel</a>
+            </li>
+            <li sec:authorize="hasAuthority('admin')">
+                <a th:href="@{/form}">+ Agente</a>
+            </li>
+        </ul>
+
+        <div class="navbar-user">
+            <span sec:authorize="isAuthenticated()">
+                <span class="user-greeting">Agente</span>
+                <span class="user-name" sec:authentication="name"></span>
+                <form th:action="@{/logout}" method="post" style="display:inline;">
+                    <button type="submit" class="btn-logout">Sair</button>
+                </form>
+            </span>
+            <span sec:authorize="!isAuthenticated()">
+                <a th:href="@{/login}" class="btn-login">Acessar</a>
+            </span>
+        </div>
+    </nav>
+
+    <!-- ═══ CONTEÚDO ═══ -->
+    <div class="container container-wide">
+        <header class="site-header">
+            <h1>Arquivos Confidenciais</h1>
+            <p class="tagline">Registro completo de agentes ativos na base de dados.</p>
+        </header>
+
+        <!-- Mensagens flash -->
+        <div th:if="${successMsg}" class="alert alert-success animate-in" th:text="${successMsg}"></div>
+        <div th:if="${errorMsg}" class="alert alert-error animate-in" th:text="${errorMsg}"></div>
+
+        <main>
+            <div th:if="${usuarios == null or usuarios.empty}" class="card">
+                <p>Nenhum agente encontrado nos arquivos. O banco de dados está vazio.</p>
+            </div>
+
+            <div th:if="${usuarios != null and !usuarios.empty}" class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Codinome</th>
+                            <th>E-mail</th>
+                            <th>Data de Registro</th>
+                            <th sec:authorize="hasAuthority('admin')">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="usuario : ${usuarios}">
+                            <td th:text="${usuario.id}"></td>
+                            <td th:text="${usuario.nome}"></td>
+                            <td th:text="${usuario.email}"></td>
+                            <td th:text="${usuario.dataNascimento}"></td>
+                            <td sec:authorize="hasAuthority('admin')" class="actions">
+                                <a th:href="@{/listar/editar/{id}(id=${usuario.id})}" class="btn-edit">Editar</a>
+                                <form th:action="@{/listar/deletar/{id}(id=${usuario.id})}" method="post" style="display:inline;">
+                                    <button type="submit" class="btn-delete" onclick="return confirm('Remover permanentemente este agente?')">Excluir</button>
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <!-- ═══ FOOTER ═══ -->
+    <footer class="site-footer">
+        <p><span>Realis Obscura</span> &copy; 2026 — A verdade não se esconde. Ela é escondida.</p>
+    </footer>
+
+</body>
+</html>

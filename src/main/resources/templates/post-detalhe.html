@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="'Realis Obscura | ' + ${post.titulo}">Realis Obscura | Post</title>
+    <link rel="stylesheet" th:href="@{/css/estilo.css}">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <img th:src="@{/img/R.svg}" alt="Realis Obscura">
+            <span>Realis Obscura</span>
+        </div>
+        <ul class="navbar-nav">
+            <li><a th:href="@{/}">Feed</a></li>
+            <li><a th:href="@{/itens}">Itens</a></li>
+            <li><a th:href="@{/teorias}">Teorias</a></li>
+            <li sec:authorize="isAuthenticated()">
+                <a th:href="@{/posts/novo}">Postar</a>
+            </li>
+            <li sec:authorize="hasAuthority('admin')">
+                <a th:href="@{/listar}">Arquivos</a>
+            </li>
+            <li sec:authorize="hasAuthority('admin')">
+                <a th:href="@{/admin}">Painel</a>
+            </li>
+        </ul>
+        <div class="navbar-user">
+            <span sec:authorize="isAuthenticated()">
+                <span class="user-greeting">Agente</span>
+                <span class="user-name" sec:authentication="name"></span>
+                <form th:action="@{/logout}" method="post" style="display:inline;">
+                    <button type="submit" class="btn-logout">Sair</button>
+                </form>
+            </span>
+            <span sec:authorize="!isAuthenticated()">
+                <a th:href="@{/login}" class="btn-login">Acessar</a>
+            </span>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Mensagens flash -->
+        <div th:if="${successMsg}" class="alert alert-success animate-in" th:text="${successMsg}"></div>
+        <div th:if="${errorMsg}" class="alert alert-error animate-in" th:text="${errorMsg}"></div>
+
+        <main>
+            <!-- Post -->
+            <article class="card animate-in" style="border-left: 4px solid var(--accent);">
+                <div class="post-categoria" style="color: var(--accent-dim); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px;"
+                     th:text="'[' + ${post.categoria} + ']'"></div>
+                <h2 style="margin-bottom: 6px;" th:text="${post.titulo}"></h2>
+                <div class="post-meta" style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px dashed var(--border);">
+                    <span th:text="'Arquivado por ' + ${post.autor.nome}"></span> •
+                    <span th:text="${#temporals.format(post.dataCriacao, 'dd/MM/yyyy HH:mm')}"></span>
+                    <span th:if="${post.dataAtualizacao != post.dataCriacao}">
+                        • <span th:text="'Atualizado: ' + ${#temporals.format(post.dataAtualizacao, 'dd/MM/yyyy HH:mm')}"></span>
+                    </span>
+                </div>
+                <div class="post-conteudo" style="font-family: var(--font-sans); line-height: 1.8; color: var(--text-primary); white-space: pre-wrap;"
+                     th:text="${post.conteudo}"></div>
+
+                <!-- Botões de editar/excluir (apenas dono ou admin) -->
+                <div th:if="${podeEditar}" style="margin-top: 20px; padding-top: 15px; border-top: 1px dashed var(--border); display: flex; gap: 10px;">
+                    <a th:href="@{/posts/editar/{id}(id=${post.id})}" class="btn-edit" style="padding: 6px 16px; border-radius: 4px; font-size: 0.85rem;">Editar</a>
+                    <form th:action="@{/posts/deletar/{id}(id=${post.id})}" method="post" style="display:inline;">
+                        <button type="submit" class="btn-delete" style="padding: 6px 16px; border-radius: 4px; font-size: 0.85rem;"
+                                onclick="return confirm('Remover permanentemente este arquivo?')">Excluir</button>
+                    </form>
+                </div>
+            </article>
+
+            <!-- Seção de Comentários -->
+            <section class="comentarios-section mt-3">
+                <h2>Comentários dos Agentes</h2>
+
+                <div th:if="${comentarios == null or comentarios.empty}" class="card" style="opacity: 0.6;">
+                    <p style="font-style: italic;">Nenhum comentário neste arquivo. Seja o primeiro agente a se manifestar.</p>
+                </div>
+
+                <div th:each="comentario : ${comentarios}" class="comentario-card">
+                    <div class="comentario-header">
+                        <span class="comentario-autor" th:text="${comentario.autor.nome}"></span>
+                        <span class="comentario-data" th:text="${#temporals.format(comentario.dataCriacao, 'dd/MM/yyyy HH:mm')}"></span>
+                    </div>
+                    <div class="comentario-conteudo" th:text="${comentario.conteudo}"></div>
+                </div>
+
+                <!-- Formulário de comentário -->
+                <div sec:authorize="isAuthenticated()" class="comentario-form mt-2">
+                    <h3>Adicionar ao Arquivo</h3>
+                    <form th:action="@{/posts/{id}/comentar(id=${post.id})}" method="post" th:object="${comentarioRequest}">
+                        <div class="form-group">
+                            <textarea th:field="*{conteudo}"
+                                      placeholder="Seu comentário sobre este arquivo..."
+                                      rows="4" required
+                                      style="background-color: var(--bg-input); border: 1px solid var(--border-accent); color: var(--text-primary); padding: 12px; font-family: var(--font-sans); font-size: 0.9rem; width: 100%; resize: vertical;"></textarea>
+                        </div>
+                        <button type="submit" class="btn">Enviar Comentário</button>
+                    </form>
+                </div>
+
+                <div sec:authorize="!isAuthenticated()" class="card mt-2" style="text-align: center;">
+                    <p><a th:href="@{/login}">Faça login</a> para adicionar seu comentário a este arquivo.</p>
+                </div>
+            </section>
+
+            <div class="mt-3">
+                <a th:href="@{/teorias}">← Voltar aos Arquivos</a>
+            </div>
+        </main>
+    </div>
+
+    <footer class="site-footer">
+        <p><span>Realis Obscura</span> &copy; 2026 — A verdade não se esconde. Ela é escondida.</p>
+    </footer>
+
+</body>
+</html>

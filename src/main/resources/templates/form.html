@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Realis Obscura | Cadastro de Agente</title>
+    <link rel="stylesheet" th:href="@{/css/estilo.css}">
+</head>
+<body>
+
+    <!-- ═══ NAVBAR ═══ -->
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <img th:src="@{/img/R.svg}" alt="Realis Obscura">
+            <span>Realis Obscura</span>
+        </div>
+
+        <ul class="navbar-nav">
+            <li><a th:href="@{/}">Feed</a></li>
+            <li><a th:href="@{/itens}">Itens</a></li>
+            <li><a th:href="@{/teorias}">Teorias</a></li>
+            <li sec:authorize="isAuthenticated()">
+                <a th:href="@{/listar}">Arquivos</a>
+            </li>
+            <li sec:authorize="hasAuthority('admin')">
+                <a th:href="@{/admin}">Painel</a>
+            </li>
+            <li sec:authorize="hasAuthority('admin')">
+                <a th:href="@{/form}" class="active">+ Agente</a>
+            </li>
+        </ul>
+
+        <div class="navbar-user">
+            <span sec:authorize="isAuthenticated()">
+                <span class="user-greeting">Agente</span>
+                <span class="user-name" sec:authentication="name"></span>
+                <form th:action="@{/logout}" method="post" style="display:inline;">
+                    <button type="submit" class="btn-logout">Sair</button>
+                </form>
+            </span>
+            <span sec:authorize="!isAuthenticated()">
+                <a th:href="@{/login}" class="btn-login">Acessar</a>
+            </span>
+        </div>
+    </nav>
+
+    <!-- ═══ CONTEÚDO ═══ -->
+    <div class="container">
+        <header class="site-header">
+            <h1>Terminal de Identificação</h1>
+            <p class="tagline">Cadastro de novo agente na base de dados confidencial.</p>
+        </header>
+
+        <main>
+            <div class="form-container animate-in">
+                <form th:action="@{/form}" th:object="${usuario}" method="POST">
+
+                    <div class="form-group">
+                        <label for="nome">Identificação (Nome)</label>
+                        <input type="text" id="nome" th:field="*{nome}"
+                               placeholder="Nome do Agente..." required autofocus>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Canal de Contato (E-mail)</label>
+                        <input type="email" id="email" th:field="*{email}"
+                               placeholder="agente@realisobscura.org" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="nascimento">Data de Registro (Nascimento)</label>
+                        <input type="date" id="nascimento" th:field="*{dataNascimento}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Chave de Criptografia</label>
+                        <input type="password" id="password" th:field="*{password}"
+                               placeholder="Mínimo 6 caracteres..." required>
+                    </div>
+
+                    <button type="submit" class="btn btn-block">Autenticar Acesso</button>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <!-- ═══ FOOTER ═══ -->
+    <footer class="site-footer">
+        <p><span>Realis Obscura</span> &copy; 2026 — A verdade não se esconde. Ela é escondida.</p>
+    </footer>
+
+</body>
+</html>
