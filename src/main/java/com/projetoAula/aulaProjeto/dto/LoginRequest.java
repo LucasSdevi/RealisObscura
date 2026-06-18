@@ -23,7 +23,7 @@ public class LoginRequest {
     }
 
     public void setNome(String nome) {
-        this.nome = nome;
+        this.nome = nome != null ? nome.trim() : null;
     }
 
     public String getPassword() {

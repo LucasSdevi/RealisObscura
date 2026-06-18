@@ -20,6 +20,8 @@ import com.projetoAula.aulaProjeto.model.Usuario;
 import com.projetoAula.aulaProjeto.model.UsuarioService;
 import com.projetoAula.aulaProjeto.security.JwtUtil;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -32,6 +34,9 @@ public class AuthController {
 
     @Autowired
     private JwtUtil jwtUtil;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @GetMapping("/login")
     public String paginaLogin(@RequestParam(value = "error", required = false) String error,
@@ -68,8 +73,7 @@ public class AuthController {
         Usuario usuario = usuarioOpt.get();
 
         // Verificar senha com BCrypt
-        if (!new org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder()
-                .matches(loginRequest.getPassword(), usuario.getPassword())) {
+        if (!passwordEncoder.matches(loginRequest.getPassword(), usuario.getPassword())) {
             model.addAttribute("errorMsg", "Senha de acesso incorreta.");
             return "login";
         }

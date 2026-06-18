@@ -56,7 +56,7 @@ public class Usuario {
     }
 
     public void setNome(String nome) {
-        this.nome = nome;
+        this.nome = nome != null ? nome.trim() : null;
     }
 
     public String getEmail() {
@@ -64,7 +64,7 @@ public class Usuario {
     }
 
     public void setEmail(String email) {
-        this.email = email;
+        this.email = email != null ? email.trim() : null;
     }
 
     public LocalDate getDataNascimento() {
