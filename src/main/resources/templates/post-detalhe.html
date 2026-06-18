@@ -82,12 +82,48 @@
                     <p style="font-style: italic;">Nenhum comentário neste arquivo. Seja o primeiro agente a se manifestar.</p>
                 </div>
 
-                <div th:each="comentario : ${comentarios}" class="comentario-card">
+                <div th:each="comentario, iterStat : ${comentarios}" class="comentario-card">
                     <div class="comentario-header">
                         <span class="comentario-autor" th:text="${comentario.autor.nome}"></span>
                         <span class="comentario-data" th:text="${#temporals.format(comentario.dataCriacao, 'dd/MM/yyyy HH:mm')}"></span>
+                        <!-- Ações do comentário -->
+                        <span sec:authorize="isAuthenticated()" class="comentario-acoes" style="margin-left: auto; display: flex; gap: 6px;">
+                            <!-- Editar (apenas dono do comentário) -->
+                            <button sec:authorize="isAuthenticated()"
+                                    th:if="${#authentication.name == comentario.autor.nome}"
+                                    th:attr="onclick='toggleEditForm(' + ${iterStat.index} + ')'"
+                                    class="btn-edit-comment" style="padding: 2px 10px; font-size: 0.75rem; border-radius: 3px; background: none; border: 1px solid var(--accent-dim); color: var(--accent-dim); cursor: pointer;">Editar</button>
+                            <!-- Excluir (admin ou dono do comentário) -->
+                            <form th:if="${#authentication.name == comentario.autor.nome}"
+                                  th:action="@{/posts/{postId}/comentario/{comId}/deletar(postId=${post.id}, comId=${comentario.id})}"
+                                  method="post" style="display:inline;"
+                                  onsubmit="return confirm('Remover este comentário?')">
+                                <button type="submit" class="btn-delete-comment" style="padding: 2px 10px; font-size: 0.75rem; border-radius: 3px; background: none; border: 1px solid #c44; color: #c44; cursor: pointer;">Excluir</button>
+                            </form>
+                            <form sec:authorize="hasAuthority('admin')"
+                                  th:if="${#authentication.name != comentario.autor.nome}"
+                                  th:action="@{/posts/{postId}/comentario/{comId}/deletar(postId=${post.id}, comId=${comentario.id})}"
+                                  method="post" style="display:inline;"
+                                  onsubmit="return confirm('Remover este comentário?')">
+                                <button type="submit" class="btn-delete-comment" style="padding: 2px 10px; font-size: 0.75rem; border-radius: 3px; background: none; border: 1px solid #c44; color: #c44; cursor: pointer;">Excluir</button>
+                            </form>
+                        </span>
                     </div>
-                    <div class="comentario-conteudo" th:text="${comentario.conteudo}"></div>
+                    <!-- Conteúdo do comentário (visível por padrão) -->
+                    <div th:id="'comentario-conteudo-' + ${iterStat.index}" class="comentario-conteudo" th:text="${comentario.conteudo}"></div>
+                    <!-- Formulário de edição inline (oculto por padrão) -->
+                    <div th:id="'comentario-edit-form-' + ${iterStat.index}" class="comentario-edit-form" style="display: none; margin-top: 8px;">
+                        <form th:action="@{/posts/{postId}/comentario/{comId}/editar(postId=${post.id}, comId=${comentario.id})}" method="post">
+                            <textarea name="conteudo" rows="3" required
+                                      style="background-color: var(--bg-input); border: 1px solid var(--accent-dim); color: var(--text-primary); padding: 10px; font-family: var(--font-sans); font-size: 0.85rem; width: 100%; resize: vertical;"
+                                      th:text="${comentario.conteudo}"></textarea>
+                            <div style="display: flex; gap: 6px; margin-top: 6px;">
+                                <button type="submit" style="padding: 4px 14px; font-size: 0.8rem; border-radius: 3px; background: var(--accent); color: #fff; border: none; cursor: pointer;">Salvar</button>
+                                <button type="button" th:attr="onclick='toggleEditForm(' + ${iterStat.index} + ')'"
+                                        style="padding: 4px 14px; font-size: 0.8rem; border-radius: 3px; background: none; border: 1px solid var(--border); color: var(--text-muted); cursor: pointer;">Cancelar</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
 
                 <!-- Formulário de comentário -->
@@ -108,6 +144,20 @@
                     <p><a th:href="@{/login}">Faça login</a> para adicionar seu comentário a este arquivo.</p>
                 </div>
             </section>
+
+            <script>
+                function toggleEditForm(index) {
+                    var conteudo = document.getElementById('comentario-conteudo-' + index);
+                    var form = document.getElementById('comentario-edit-form-' + index);
+                    if (conteudo.style.display === 'none') {
+                        conteudo.style.display = 'block';
+                        form.style.display = 'none';
+                    } else {
+                        conteudo.style.display = 'none';
+                        form.style.display = 'block';
+                    }
+                }
+            </script>
 
             <div class="mt-3">
                 <a th:href="@{/teorias}">← Voltar aos Arquivos</a>

@@ -33,6 +33,8 @@ public class SecurityConfig {
                         .requestMatchers("/itens", "/teorias").permitAll()
                         .requestMatchers("/posts/{id:\\d+}").permitAll()
                         .requestMatchers("/posts/{id:\\d+}/comentar").authenticated()
+                        .requestMatchers("/posts/{postId:\\d+}/comentario/{comentarioId:\\d+}/editar").authenticated()
+                        .requestMatchers("/posts/{postId:\\d+}/comentario/{comentarioId:\\d+}/deletar").authenticated()
                         .requestMatchers("/posts/novo").authenticated()
                         .requestMatchers("/posts/editar/**").authenticated()
                         .requestMatchers("/posts/deletar/**").authenticated()

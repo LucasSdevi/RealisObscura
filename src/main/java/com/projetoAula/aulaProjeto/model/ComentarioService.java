@@ -31,6 +31,17 @@ public class ComentarioService {
         return comentarioRepository.findByPostIdOrderByDataCriacaoAsc(postId);
     }
 
+    public Comentario buscarPorId(Long id) {
+        return comentarioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Comentário não encontrado"));
+    }
+
+    public Comentario editarComentario(Long id, String novoConteudo) {
+        Comentario comentario = buscarPorId(id);
+        comentario.setConteudo(novoConteudo);
+        return comentarioRepository.save(comentario);
+    }
+
     public void deletarComentario(Long id) {
         comentarioRepository.deleteById(id);
     }

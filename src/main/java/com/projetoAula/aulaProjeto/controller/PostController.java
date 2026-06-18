@@ -95,12 +95,61 @@ public class PostController {
         return "redirect:/posts/" + id;
     }
 
-    // ── Deletar Comentário (admin ou dono) ────────────────────────
+    // ── Editar Comentário (dono do comentário) ────────────────────
+    @PostMapping("/posts/{postId}/comentario/{comentarioId}/editar")
+    public String editarComentario(@PathVariable Long postId,
+                                   @PathVariable Long comentarioId,
+                                   @Valid @ModelAttribute("comentarioRequest") ComentarioRequest request,
+                                   Principal principal,
+                                   RedirectAttributes redirectAttributes) {
+        if (principal == null) {
+            redirectAttributes.addFlashAttribute("errorMsg",
+                    "Acesso restrito: faça login para editar.");
+            return "redirect:/login";
+        }
+
+        Comentario comentario = comentarioService.buscarPorId(comentarioId);
+        Usuario usuario = usuarioService.buscarPorNome(principal.getName())
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
+        // Apenas o autor do comentário pode editar
+        if (!comentario.getAutor().getId().equals(usuario.getId())) {
+            redirectAttributes.addFlashAttribute("errorMsg",
+                    "Acesso negado: apenas o autor pode editar este comentário.");
+            return "redirect:/posts/" + postId;
+        }
+
+        comentarioService.editarComentario(comentarioId, request.getConteudo());
+        redirectAttributes.addFlashAttribute("successMsg", "Comentário atualizado.");
+        return "redirect:/posts/" + postId;
+    }
+
+    // ── Deletar Comentário (admin ou dono do comentário) ────────────
     @PostMapping("/posts/{postId}/comentario/{comentarioId}/deletar")
     public String deletarComentario(@PathVariable Long postId,
                                     @PathVariable Long comentarioId,
                                     Principal principal,
                                     RedirectAttributes redirectAttributes) {
+        if (principal == null) {
+            redirectAttributes.addFlashAttribute("errorMsg",
+                    "Acesso restrito: faça login para remover.");
+            return "redirect:/login";
+        }
+
+        Comentario comentario = comentarioService.buscarPorId(comentarioId);
+        Usuario usuario = usuarioService.buscarPorNome(principal.getName())
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
+        // Apenas admin ou dono do comentário pode deletar
+        boolean isAdmin = "admin".equals(usuario.getRole());
+        boolean isDono = comentario.getAutor().getId().equals(usuario.getId());
+
+        if (!isAdmin && !isDono) {
+            redirectAttributes.addFlashAttribute("errorMsg",
+                    "Acesso negado: apenas o autor ou um admin pode remover este comentário.");
+            return "redirect:/posts/" + postId;
+        }
+
         comentarioService.deletarComentario(comentarioId);
         redirectAttributes.addFlashAttribute("successMsg", "Comentário removido.");
         return "redirect:/posts/" + postId;
