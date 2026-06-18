@@ -1,7 +1,10 @@
 package com.projetoAula.aulaProjeto.dto;
 
+import java.time.LocalDate;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public class RegistroRequest {
@@ -17,6 +20,9 @@ public class RegistroRequest {
     @NotBlank(message = "A senha é obrigatória")
     @Size(min = 6, message = "Senha deve ter no mínimo 6 caracteres")
     private String password;
+
+    @NotNull(message = "A data de nascimento é obrigatória")
+    private LocalDate dataNascimento;
 
     public RegistroRequest() {
     }
@@ -43,5 +49,13 @@ public class RegistroRequest {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public LocalDate getDataNascimento() {
+        return dataNascimento;
+    }
+
+    public void setDataNascimento(LocalDate dataNascimento) {
+        this.dataNascimento = dataNascimento;
     }
 }

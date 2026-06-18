@@ -22,13 +22,10 @@
             <li><a th:href="@{/itens}">Itens</a></li>
             <li><a th:href="@{/teorias}">Teorias</a></li>
             <li sec:authorize="isAuthenticated()">
-                <a th:href="@{/listar}">Arquivos</a>
+                <a th:href="@{/listar}">Agentes</a>
             </li>
             <li sec:authorize="hasAuthority('admin')">
                 <a th:href="@{/admin}">Painel</a>
-            </li>
-            <li sec:authorize="hasAuthority('admin')">
-                <a th:href="@{/form}" class="active">+ Agente</a>
             </li>
         </ul>
 
@@ -54,6 +51,8 @@
         </header>
 
         <main>
+            <div th:if="${errorMsg}" class="alert alert-error animate-in" th:text="${errorMsg}" style="margin-bottom: 16px;"></div>
+
             <div class="form-container animate-in">
                 <form th:action="@{/form}" th:object="${usuario}" method="POST">
 

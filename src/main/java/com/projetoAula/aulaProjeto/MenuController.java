@@ -1,5 +1,7 @@
 package com.projetoAula.aulaProjeto;
 
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.List;
 import java.util.UUID;
 
@@ -46,7 +48,21 @@ public class MenuController {
 
     @PostMapping("/form")
     public String postUsuario(@ModelAttribute Usuario usuario,
-                              RedirectAttributes redirectAttributes) {
+                              RedirectAttributes redirectAttributes,
+                              Model model) {
+        // Bloqueio de idade: mínimo 18 anos
+        LocalDate dataNascimento = usuario.getDataNascimento();
+        if (dataNascimento == null) {
+            model.addAttribute("errorMsg", "A data de nascimento é obrigatória.");
+            return "form";
+        }
+        int idade = Period.between(dataNascimento, LocalDate.now()).getYears();
+        if (idade < 18) {
+            model.addAttribute("errorMsg",
+                    "Registro negado: o agente deve ter no mínimo 18 anos.");
+            return "form";
+        }
+
         usuarioService.inserirUsuario(usuario);
         redirectAttributes.addFlashAttribute("successMsg",
                 "Novo agente registrado na base de dados.");

@@ -1,5 +1,7 @@
 package com.projetoAula.aulaProjeto.controller;
 
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -112,9 +114,23 @@ public class AuthController {
             return "registro";
         }
 
+        // Bloqueio de idade: mínimo 18 anos
+        LocalDate dataNascimento = registroRequest.getDataNascimento();
+        if (dataNascimento == null) {
+            model.addAttribute("errorMsg", "A data de nascimento é obrigatória.");
+            return "registro";
+        }
+        int idade = Period.between(dataNascimento, LocalDate.now()).getYears();
+        if (idade < 18) {
+            model.addAttribute("errorMsg",
+                    "Registro negado: é necessário ter no mínimo 18 anos para se tornar um agente.");
+            return "registro";
+        }
+
         Usuario novoUsuario = new Usuario();
         novoUsuario.setNome(registroRequest.getNome());
         novoUsuario.setEmail(registroRequest.getEmail());
+        novoUsuario.setDataNascimento(registroRequest.getDataNascimento());
         novoUsuario.setPassword(registroRequest.getPassword());
 
         Usuario salvo = usuarioService.inserirUsuario(novoUsuario);

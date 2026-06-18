@@ -21,7 +21,7 @@
             <li><a th:href="@{/itens}">Itens</a></li>
             <li><a th:href="@{/teorias}">Teorias</a></li>
             <li sec:authorize="isAuthenticated()">
-                <a th:href="@{/listar}">Arquivos</a>
+                <a th:href="@{/listar}">Agentes</a>
             </li>
             <li sec:authorize="hasAuthority('admin')">
                 <a th:href="@{/admin}" class="active">Painel</a>
