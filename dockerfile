@@ -31,4 +31,4 @@ EXPOSE 8080
 ENV JAVA_OPTS=""
 
 # Comando de inicialização
-CMD ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]
+CMD ["sh", "-c", "java $JAVA_OPTS -Dserver.port=${PORT:-8080} -jar app.jar"]
